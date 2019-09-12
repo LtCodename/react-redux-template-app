@@ -1,6 +1,4 @@
-const deepCopy = function (objectToCopy) {
-  return JSON.parse(JSON.stringify(objectToCopy));
-}
+import { combineReducers } from 'redux'
 
 const defaultStore = {
   teams: ['Ferrari', 'Mercedes'],
@@ -8,17 +6,12 @@ const defaultStore = {
 }
 
 const ADD_TEAM = 'ADD_TEAM';
-const ADD_DRIVER = 'ADD_DRIVER';
 
-const reducer = (state = defaultStore, action) => {
-  const copy = deepCopy(state);
+const teamsReducer = (state = defaultStore.teams, action) => {
+  const copy = [...state];
   switch(action.type) {
     case ADD_TEAM:
-      copy.teams.push(action.team);
-      return copy;
-      break;
-    case ADD_DRIVER:
-      copy.drivers.push(action.driver);
+      copy.push(action.team);
       return copy;
       break;
     default:
@@ -26,8 +19,27 @@ const reducer = (state = defaultStore, action) => {
   }
 };
 
+const ADD_DRIVER = 'ADD_DRIVER';
+
+const driversReducer = (state = defaultStore.drivers, action) => {
+  const copy = [...state];
+  switch(action.type) {
+    case ADD_DRIVER:
+      copy.push(action.driver);
+      return copy;
+      break;
+    default:
+      return state;
+  }
+};
+
+const rootReducer = combineReducers({
+  teams: teamsReducer,
+  drivers: driversReducer
+});
+
 export default {
-  reducer: reducer,
+  reducer: rootReducer,
   actions: {
     ADD_TEAM,
     ADD_DRIVER
